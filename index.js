@@ -1,6 +1,2 @@
-import { client } from "./client.js";
+import "./express.js"
 import "./modules/runner.js"
-
-client.on('ready', () => {
-    console.log(`Logged in as ${client.user.tag}!`);
-})
