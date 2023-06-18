@@ -31,6 +31,7 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
         if (!interaction.isChatInputCommand()) { return }
         if (!interaction.memberPermissions.has("Administrator")) { interaction.reply({ ephemeral: true, content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
         if (interaction.commandName === "hoşgeldin-kanalı-ayarla") {
+            await interaction.deferReply()
             const channelId = interaction.options.get("kanal").channel.id
             const document = await WelcomeMessageChannelModel.findOne({ guildId: interaction.guildId })
             if (document) {
@@ -40,11 +41,13 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
             }
             interaction.reply({ ephemeral: true, content: `Hoş geldin mesajları <#${channelId}> kanalına atılacak şekilde ayarlandı.` })
         } else if (interaction.commandName === "hoşgeldin-kanalı-kaldir") {
+            await interaction.deferReply()
             const document = await WelcomeMessageChannelModel.findOne({ guildId: interaction.guildId })
             if (!document) { interaction.reply({ ephemeral: true, content: `Şu anda hoş geldin mesajlarının atılacağı bir kanal bulunmamakta.` }); return }
             await WelcomeMessageChannelModel.deleteOne({ _id: document._id })
             interaction.reply({ ephemeral: true, content: `Artık <#${document.channelId}> kanalına hoş geldin mesajları gönderilmeyecek.` })
         } else if (interaction.commandName === "hoşgeldin-kanalı-göster") {
+            await interaction.deferReply()
             const document = await WelcomeMessageChannelModel.findOne({ guildId: interaction.guildId })
             if (!document) { interaction.reply({ ephemeral: true, content: `Şu anda hoş geldin mesajlarının atılacağı bir kanal bulunmamakta.` }); return }
             interaction.reply({ ephemeral: true, content: `Hoş geldin mesajları <#${document.channelId}> kanalına gönderiliyor.` })

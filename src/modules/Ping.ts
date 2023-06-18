@@ -11,6 +11,7 @@ addCommand({
 
 addInteraction(async (interaction: ChatInputCommandInteraction) => {
     try {
+        await interaction.deferReply()
         if (!interaction.isChatInputCommand()) { return }
         if (interaction.commandName !== CommandName) { return }
         await interaction.reply('Pong!')

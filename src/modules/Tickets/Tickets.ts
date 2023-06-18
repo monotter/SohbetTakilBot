@@ -1,6 +1,7 @@
-import { ButtonBuilder, ButtonStyle, ActionRowBuilder, ApplicationCommandOptionType, ChatInputCommandInteraction, TextChannel } from "discord.js"
+import { ButtonBuilder, ButtonStyle, ActionRowBuilder, ApplicationCommandOptionType, ChatInputCommandInteraction, TextChannel, Guild, GuildMember } from "discord.js"
 import { addCommand, addInteraction } from "../../client.js"
 import { model, Schema } from "mongoose"
+import { ManagerRolesModel } from "../Roles/ManagerRoles.js"
 
 export const StaffApplicationEnabledModel = model("StaffApplicationEnabled", new Schema({
     guildId: String,
@@ -26,8 +27,9 @@ addCommand({
 addInteraction(async (interaction: ChatInputCommandInteraction) => {
     try {
         if (!interaction.isChatInputCommand()) { return }
-        if (!interaction.memberPermissions.has("Administrator")) { interaction.reply({ ephemeral: true, content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
         if (interaction.commandName === "ticket-mesajı-gönder") {
+            if (!interaction.memberPermissions.has("Administrator")) { interaction.reply({ ephemeral: true, content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
+            await interaction.deferReply()
             const TicketChannel = await interaction.guild.channels.fetch(interaction.options.get("kanal").channel.id) as TextChannel
             if (!TicketChannel) { return }
             TicketChannel.send({
@@ -56,6 +58,10 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
             })
             interaction.reply({ ephemeral: true, content: `Ticket mesajı gönderildi.` })
         } else if (interaction.commandName === "yetkili-alım-durumu") {
+            if (!await ManagerRolesModel.findOne({ roleId: { $in: (interaction.member as GuildMember).roles.cache.map(({ id }) => id) } })) {
+                await interaction.reply({ ephemeral: true, content: `Bu eylem için bir denetleyici rolüne ihtiyacınız var.` }); return
+            }
+            await interaction.deferReply()
             const status = interaction.options.get("durum").value
             if (status) {
                 if (await StaffApplicationEnabledModel.findOne({ guildId: interaction.guildId })) { interaction.reply({ ephemeral: true, content: `Yetkili başvuruları zaten açık.` }); return }

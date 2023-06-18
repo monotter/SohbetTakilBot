@@ -32,16 +32,19 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
         if (!interaction.isChatInputCommand()) { return }
         if (!interaction.memberPermissions.has("Administrator")) { interaction.reply({ ephemeral: true, content: `Bu komutu kullanabilmek için direktör değilsiniz.` }); return }
         if (interaction.commandName === "direktör-rol-ekle") {
+            await interaction.deferReply()
             const roleId = interaction.options.get("rol").role.id
             if (await DirectorRolesModel.findOne({ roleId, guildId: interaction.guildId })) { interaction.reply({ ephemeral: true, content: `Direktör rollerinde, <@&${roleId}> rolü zaten mevcut.` }); return }
             await DirectorRolesModel.create({ roleId, guildId: interaction.guildId })
             await interaction.reply({ ephemeral: true, content: `<@&${roleId}> rolü direktör rollerine eklendi.` })
         } else if (interaction.commandName === "direktör-rol-çıkar") {
+            await interaction.deferReply()
             const roleId = interaction.options.get("rol").role.id
             if (!await DirectorRolesModel.findOne({ roleId, guildId: interaction.guildId })) { interaction.reply({ ephemeral: true, content: `Direktör rollerinde, <@&${roleId}> rolü zaten yok.` }); return }
             await DirectorRolesModel.deleteOne({ roleId, guildId: interaction.guildId })
             await interaction.reply({ ephemeral: true, content: `<@&${roleId}> rolü direktör rollerinden kaldırıldı.` })
         } else if (interaction.commandName === "direktör-rol-göster") {
+            await interaction.deferReply()
             const roles = await DirectorRolesModel.find({ guildId: interaction.guildId })
             if (roles.length <= 0) {
                 interaction.reply({ ephemeral: true, content: `direktör rollerinde hiç bir rol bulunmamakta.` })

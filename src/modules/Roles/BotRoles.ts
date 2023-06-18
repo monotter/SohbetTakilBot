@@ -38,6 +38,7 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
         if (!interaction.isChatInputCommand()) { return }
         if (!interaction.memberPermissions.has("Administrator")) { interaction.reply({ ephemeral: true, content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
         if (interaction.commandName === "bot-rol-ekle") {
+            await interaction.deferReply()
             const roleId = interaction.options.get("rol").role.id
             let update: any = interaction.options.get("guncelle"); update = update ? update.value : update
             if (await BotRolesModel.findOne({ roleId, guildId: interaction.guildId })) { interaction.reply({ ephemeral: true, content: `Bot rollerinde, <@&${roleId}> rolü zaten mevcut.` }); return }
@@ -56,6 +57,7 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
                 await interaction.editReply({ content: `<@&${roleId}> rolü bot rollerine eklendi. Tüm botların rolleri güncellendi.` })
             }
         } else if (interaction.commandName === "bot-rol-çıkar") {
+            await interaction.deferReply()
             const roleId = interaction.options.get("rol").role.id
             let update: any = interaction.options.get("guncelle"); update = update ? update.value : update
             if (!await BotRolesModel.findOne({ roleId, guildId: interaction.guildId })) { interaction.reply({ ephemeral: true, content: `Bot rollerinde, <@&${roleId}> rolü zaten yok.` }); return }
@@ -73,6 +75,7 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
                 await interaction.editReply({ content: `<@&${roleId}> rolü bot rollerinden kaldırıldı. Tüm botların rolleri güncellendi.` })
             }
         } else if (interaction.commandName === "bot-rol-göster") {
+            await interaction.deferReply()
             const roles = await BotRolesModel.find({ guildId: interaction.guildId })
             if (roles.length <= 0) {
                 interaction.reply({ ephemeral: true, content: `Bot rollerinde hiç bir rol bulunmamakta.` })
@@ -80,6 +83,7 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
                 interaction.reply({ ephemeral: true, content: `${roles.map(({ roleId }) => `<@&${roleId}>`).join(`, `)} rolleri bot rollerinde mevcut.` })
             }
         } else if (interaction.commandName === "bot-rol-guncelle") {
+            await interaction.deferReply()
             const roles = await BotRolesModel.find({ guildId: interaction.guildId })
             const members = await interaction.guild.members.fetch()
             const Promises = []

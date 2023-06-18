@@ -23,6 +23,7 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
         if (!interaction.isChatInputCommand()) { return }
         if (!interaction.memberPermissions.has("Administrator")) { interaction.reply({ ephemeral: true, content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
         if (interaction.commandName === "rol-ver") {
+            await interaction.deferReply()
             const group = interaction.options.get("grup")
             const roleId = interaction.options.get("rol").role.id
             const Promises = []
@@ -41,6 +42,7 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
             await Promise.all(Promises)
             await interaction.editReply({ content: `${group.role ? `<@${group.role.id}> grubuna` : group.member ? `<@&${group.user.id}> üyesine` : ''} <@&${roleId}> rolü verildi.` })
         } else if (interaction.commandName === "rol-al") {
+            await interaction.deferReply()
             const group = interaction.options.get("grup")
             const roleId = interaction.options.get("rol").role.id
             const Promises = []

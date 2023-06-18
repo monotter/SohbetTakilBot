@@ -37,6 +37,7 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
         if (!interaction.isChatInputCommand()) { return }
         if (!interaction.memberPermissions.has("Administrator")) { interaction.reply({ ephemeral: true, content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
         if (interaction.commandName === "takviyeci-rol-ekle") {
+            await interaction.deferReply()
             const roleId = interaction.options.get("rol").role.id
             let update: any = interaction.options.get("guncelle"); update = update ? update.value : update
             if (await BoosterRolesModel.findOne({ roleId, guildId: interaction.guildId })) { interaction.reply({ ephemeral: true, content: `Takviyeci rollerde, <@&${roleId}> rolü zaten mevcut.` }); return }
@@ -55,6 +56,7 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
                 await interaction.editReply({ content: `<@&${roleId}> rolü takviyeci rollere eklendi. Herkesin rolleri güncellendi.` })
             }
         } else if (interaction.commandName === "takviyeci-rol-çıkar") {
+            await interaction.deferReply()
             const roleId = interaction.options.get("rol").role.id
             let update: any = interaction.options.get("guncelle"); update = update ? update.value : update
             if (!await BoosterRolesModel.findOne({ roleId, guildId: interaction.guildId })) { interaction.reply({ ephemeral: true, content: `Takviyeci rollerde, <@&${roleId}> rolü zaten yok.` }); return }
@@ -72,6 +74,7 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
                 await interaction.editReply({ content: `<@&${roleId}> rolü takviyeci rollereden kaldırıldı. Herkesin rolleri güncellendi.` })
             }
         } else if (interaction.commandName === "takviyeci-rol-göster") {
+            await interaction.deferReply()
             const roles = await BoosterRolesModel.find({ guildId: interaction.guildId })
             if (roles.length <= 0) {
                 interaction.reply({ ephemeral: true, content: `Takviyeci rollerde hiç bir rol bulunmamakta.` })
@@ -79,6 +82,7 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
                 interaction.reply({ ephemeral: true, content: `${roles.map(({ roleId }) => `<@&${roleId}>`).join(`, `)} rolleri takviyeci rollerde mevcut.` })
             }
         } else if (interaction.commandName === "takviyeci-rol-guncelle") {
+            await interaction.deferReply()
             const roles = await BoosterRolesModel.find({ guildId: interaction.guildId })
             const members = await interaction.guild.members.fetch()
             const Promises = []

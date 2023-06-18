@@ -31,6 +31,7 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
         if (!interaction.isChatInputCommand()) { return }
         if (!interaction.memberPermissions.has("Administrator")) { interaction.reply({ ephemeral: true, content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
         if (interaction.commandName === "üye-sayısı-kanalı-ayarla") {
+            await interaction.deferReply()
             const channelId = interaction.options.get("kanal").channel.id
             const name = interaction.options.get("isim_sablonu").value
             const document = await MemberSizeChannelModel.findOne({ guildId: interaction.guildId })
@@ -41,11 +42,13 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
             }
             interaction.reply({ ephemeral: true, content: `<#${channelId}> kanalı üye sayısını gösterecek şekilde ayarlandı.` })
         } else if (interaction.commandName === "üye-sayısı-kanalı-kaldır") {
+            await interaction.deferReply()
             const document = await MemberSizeChannelModel.findOne({ guildId: interaction.guildId })
             if (!document) { interaction.reply({ ephemeral: true, content: `Şu anda üye sayısını gösteren bir kanal bulunmamakta.` }); return }
             await MemberSizeChannelModel.deleteOne({ _id: document._id })
             interaction.reply({ ephemeral: true, content: `<#${document.channelId}> kanalı artık üye sayısını göstermeyecek.` })
         } else if (interaction.commandName === "üye-sayısı-kanalı-göster") {
+            await interaction.deferReply()
             const document = await MemberSizeChannelModel.findOne({ guildId: interaction.guildId })
             if (!document) { interaction.reply({ ephemeral: true, content: `Şu anda üye sayısını gösteren bir kanal bulunmamakta.` }); return }
             interaction.reply({ ephemeral: true, content: `<#${document.channelId}> kanalı üye sayısını gösteriyor.` })
