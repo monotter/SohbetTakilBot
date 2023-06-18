@@ -1,0 +1,12 @@
+{
+  // https://www.typescriptlang.org/tsconfig#compilerOptions
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2022",
+    "sourceMap": true,
+    "outDir": "dist",
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}

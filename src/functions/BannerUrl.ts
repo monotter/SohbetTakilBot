@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { client } from '../client.js';
-export async function getUserBannerUrl(userId, { dynamicFormat = true, defaultFormat = "webp", size = 512 } = {}) {
+export async function getUserBannerUrl(userId: string, { dynamicFormat = true, defaultFormat = "webp", size = 512 } = {}) {
     // Supported image sizes, inspired by 'https://discord.js.org/#/docs/main/stable/typedef/ImageURLOptions'.
     if (![16, 32, 64, 128, 256, 512, 1024, 2048, 4096].includes(size)) {
         throw new Error(`The size '${size}' is not supported!`);

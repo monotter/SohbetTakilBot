@@ -4,13 +4,20 @@
     "canvas": "^2.11.2",
     "discord.js": "^14.11.0",
     "dotenv": "^16.1.4",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "mongoose": "^7.3.0"
   },
   "type": "module",
   "scripts": {
-    "start": "node index.js"
+    "build": "rimraf dist & tsc",
+    "prestart": "npm run build",
+    "start": "node dist/index.js",
+    "serve": "concurrently \"tsc -w\" \"nodemon dist/index.js\""
   },
   "engines": {
     "node": ">=20.3.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17"
   }
 }
