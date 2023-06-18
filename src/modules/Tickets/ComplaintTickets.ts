@@ -257,7 +257,7 @@ addInteraction(async (interaction: ButtonInteraction) => {
         } else if (interaction.customId === "CloseComplaint") {
             const ComplaintTicket = await ComplaintTicketModel.findOne({ guildId: interaction.guildId, threadId: interaction.channel.id })
             if (!(ComplaintTicket.creatorId === interaction.user.id || await StaffRolesModel.findOne({ roleId: { $in: (interaction.member as GuildMember).roles.cache.map(({ id }) => id) } }))) {
-                await interaction.reply({  content: `Bu Şikayeti kapatabilmeniz için yetkili veya şikayet sahibi olmanız gerekiyor.` }); return
+                await interaction.reply({ ephemeral: true, content: `Bu Şikayeti kapatabilmeniz için yetkili veya şikayet sahibi olmanız gerekiyor.` }); return
             }
             await interaction.showModal(CloseComplaintModal)
         } else if (interaction.customId === "CancelComplaint") {

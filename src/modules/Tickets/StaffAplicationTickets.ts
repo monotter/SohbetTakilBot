@@ -284,23 +284,23 @@ addInteraction(async (interaction: ButtonInteraction) => {
     try {
         if (!interaction.isButton()) { return }
         if (interaction.customId === "StaffApplication") {
-            if (await StaffApplicationTicketModel.findOne({ guildId: interaction.guildId, creatorId: interaction.user.id, status: StaffApplicationTicketStatus.OnGoing })) { interaction.reply({  content: `Zaten hali hazırda devam eden bir başvurunuz var.` }); return }
-            if (!await StaffApplicationEnabledModel.findOne({ guildId: interaction.guildId })) { interaction.reply({  content: `Yetkili başvuruları kapalı.` }); return }
+            if (await StaffApplicationTicketModel.findOne({ guildId: interaction.guildId, creatorId: interaction.user.id, status: StaffApplicationTicketStatus.OnGoing })) { interaction.reply({ ephemeral: true, content: `Zaten hali hazırda devam eden bir başvurunuz var.` }); return }
+            if (!await StaffApplicationEnabledModel.findOne({ guildId: interaction.guildId })) { interaction.reply({ ephemeral: true, content: `Yetkili başvuruları kapalı.` }); return }
             if (await StaffRolesModel.findOne({ roleId: { $in: (interaction.member as GuildMember).roles.cache.map(({ id }) => id) } })) {
                 await interaction.reply({  content: `Zaten bir yetkili rolüne sahip olduğunuz için tekrar başvuru yapamazsınız.` }); return
             }
             await interaction.showModal(StaffApplicationModal)
         } else if (interaction.customId === "CancelStaffApplication") {
-            if (!await StaffApplicationTicketModel.findOne({ guildId: interaction.guildId, creatorId: interaction.user.id, threadId: interaction.channel.id })) { interaction.reply({  content: `Başvuruyu sadece sahibi iptal edebilir.` }); return }
+            if (!await StaffApplicationTicketModel.findOne({ guildId: interaction.guildId, creatorId: interaction.user.id, threadId: interaction.channel.id })) { interaction.reply({ ephemeral: true, content: `Başvuruyu sadece sahibi iptal edebilir.` }); return }
             await interaction.showModal(CancelStaffApplicationModal)
         } else if (interaction.customId === "RefuseStaffApplication") {
             if (!await ManagerRolesModel.findOne({ roleId: { $in: (interaction.member as GuildMember).roles.cache.map(({ id }) => id) } })) {
-                await interaction.reply({  content: `Bu eylem için bir denetleyici rolüne ihtiyacınız var.` }); return
+                await interaction.reply({ ephemeral: true, content: `Bu eylem için bir denetleyici rolüne ihtiyacınız var.` }); return
             }
             await interaction.showModal(RefuseStaffApplicationModal)
         } else if (interaction.customId === "AcceptStaffApplication") {
             if (!await ManagerRolesModel.findOne({ roleId: { $in: (interaction.member as GuildMember).roles.cache.map(({ id }) => id) } })) {
-                await interaction.reply({ content: `Bu eylem için bir denetleyici rolüne ihtiyacınız var.` }); return
+                await interaction.reply({ ephemeral: true, content: `Bu eylem için bir denetleyici rolüne ihtiyacınız var.` }); return
             }
             await interaction.showModal(AcceptStaffApplicationModal)
         }

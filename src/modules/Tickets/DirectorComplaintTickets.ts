@@ -206,12 +206,12 @@ addInteraction(async (interaction: ButtonInteraction) => {
     try {
         if (!interaction.isButton()) { return }
         if (interaction.customId === "DirectorComplaint") {
-            if (await DirectorComplaintTicketModel.findOne({ guildId: interaction.guildId, creatorId: interaction.user.id, status: DirectorComplaintTicketStatus.OnGoing })) { interaction.reply({  content: `Zaten hali hazırda devam eden bir şikayetiniz var.` }); return }
+            if (await DirectorComplaintTicketModel.findOne({ guildId: interaction.guildId, creatorId: interaction.user.id, status: DirectorComplaintTicketStatus.OnGoing })) { interaction.reply({ ephemeral: true, content: `Zaten hali hazırda devam eden bir şikayetiniz var.` }); return }
             await interaction.showModal(DirectorComplaintModal)
         } else if (interaction.customId === "CloseDirectorComplaint") {
             const DirectorComplaintTicket = await DirectorComplaintTicketModel.findOne({ guildId: interaction.guildId, threadId: interaction.channelId })
             if (!(DirectorComplaintTicket.creatorId === interaction.user.id || await DirectorRolesModel.findOne({ roleId: { $in: (interaction.member as GuildMember).roles.cache.map(({ id }) => id) } }))) {
-                await interaction.reply({  content: `Bu Şikayeti kapatabilmeniz için direktör veya şikayet sahibi olmanız gerekiyor.` }); return
+                await interaction.reply({ ephemeral: true, content: `Bu Şikayeti kapatabilmeniz için direktör veya şikayet sahibi olmanız gerekiyor.` }); return
             }
             await interaction.showModal(CloseDirectorComplaintModal)
         }
