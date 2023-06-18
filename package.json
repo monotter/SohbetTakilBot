@@ -9,10 +9,10 @@
   },
   "type": "module",
   "scripts": {
-    "build": "npm install & npm install concurrently -g & npm install typescript -g",
+    "build": "npm install & npm install concurrently -g & npm install typescript -g & npx tsc",
     "prestart": "npm run build",
     "start": "node dist/index.js",
-    "serve": "npx concurrently \"npx tsc -w\" \"npx nodemon dist/index.js\""
+    "dev": "npx concurrently \"npx tsc -w\" \"npx nodemon dist/index.js\""
   },
   "engines": {
     "node": ">=20.3.0"
