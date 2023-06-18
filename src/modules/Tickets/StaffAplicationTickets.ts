@@ -245,7 +245,8 @@ addInteraction(async (interaction: ModalSubmitInteraction) => {
             const StaffApplication = await StaffApplicationTicketModel.findOne({ guildId: interaction.guildId, threadId: interaction.channel.id }) || { creatorId: 0 }
             await TicketThread.send(`<@${interaction.user.id}> <@${(StaffApplication.creatorId)}>'in başvurusunu, \`${Reason}\` sebebinden dolayı reddetti.`)
             try {
-                await interaction.user.send({ content: `Yetkili başvurunuz, \`${Reason}\` sebebinden dolayı reddedildi.` })
+                await interaction.guild.members.fetch()
+                await interaction.guild.members.cache.get(`${StaffApplication.creatorId}`).user.send({ content: `Yetkili başvurunuz, \`${Reason}\` sebebinden dolayı reddedildi.` })
             } catch (error) { }
             await StaffApplicationTicketModel.updateOne({ guildId: interaction.guildId, threadId: interaction.channel.id }, { $set: { reason: Reason, status: StaffApplicationTicketStatus.Refused } })
             await interaction.deleteReply()
@@ -261,7 +262,8 @@ addInteraction(async (interaction: ModalSubmitInteraction) => {
             const StaffApplication = await StaffApplicationTicketModel.findOne({ guildId: interaction.guildId, threadId: interaction.channel.id })
             await TicketThread.send(`<@${interaction.user.id}> <@${(StaffApplication ? StaffApplication.creatorId : 0)}>'in başvurusunu, \`${Reason}\` sebebinden dolayı onayladı.`)
             try {
-                await interaction.user.send({ content: `Yetkili başvurunuz onaylandı.` })
+                await interaction.guild.members.fetch()
+                await interaction.guild.members.cache.get(`${StaffApplication.creatorId}`).user.send({ content: `Yetkili başvurunuz onaylandı.` })
             } catch (error) { }
             await StaffApplicationTicketModel.updateOne({ guildId: interaction.guildId, threadId: interaction.channel.id }, { $set: { reason: Reason, status: StaffApplicationTicketStatus.Accepted } })
             await interaction.deleteReply()

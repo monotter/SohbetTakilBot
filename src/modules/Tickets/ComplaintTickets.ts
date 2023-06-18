@@ -197,7 +197,8 @@ addInteraction(async (interaction: ModalSubmitInteraction) => {
             if (ComplaintTicket.creatorId !== interaction.user.id) {
                 await TicketThread.send(`<@${interaction.user.id}> <@${ ComplaintTicket.creatorId }>'in şikayetini, \`${Reason}\` sebebinden dolayı kapattı.`)
                 try {
-                    await interaction.user.send({ content: `Şikayetiniz, \`${Reason}\` sebebinden dolayı kapatıldı.` })
+                    await interaction.guild.members.fetch()
+                    await interaction.guild.members.cache.get(`${ComplaintTicket.creatorId}`).user.send({ content: `Şikayetiniz, \`${Reason}\` sebebinden dolayı kapatıldı.` })
                 } catch (error) { }
             } else {
                 await TicketThread.send(`<@${interaction.user.id}> şikayetini, \`${Reason}\` sebebinden dolayı kapattı.`)
