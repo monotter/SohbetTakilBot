@@ -287,7 +287,7 @@ addInteraction(async (interaction: ButtonInteraction) => {
             if (await StaffApplicationTicketModel.findOne({ guildId: interaction.guildId, creatorId: interaction.user.id, status: StaffApplicationTicketStatus.OnGoing })) { interaction.reply({ ephemeral: true, content: `Zaten hali hazırda devam eden bir başvurunuz var.` }); return }
             if (!await StaffApplicationEnabledModel.findOne({ guildId: interaction.guildId })) { interaction.reply({ ephemeral: true, content: `Yetkili başvuruları kapalı.` }); return }
             if (await StaffRolesModel.findOne({ roleId: { $in: (interaction.member as GuildMember).roles.cache.map(({ id }) => id) } })) {
-                await interaction.reply({  content: `Zaten bir yetkili rolüne sahip olduğunuz için tekrar başvuru yapamazsınız.` }); return
+                await interaction.reply({ ephemeral: true, content: `Zaten bir yetkili rolüne sahip olduğunuz için tekrar başvuru yapamazsınız.` }); return
             }
             await interaction.showModal(StaffApplicationModal)
         } else if (interaction.customId === "CancelStaffApplication") {

@@ -261,7 +261,7 @@ addInteraction(async (interaction: ButtonInteraction) => {
             }
             await interaction.showModal(CloseComplaintModal)
         } else if (interaction.customId === "CancelComplaint") {
-            if (!await ComplaintTicketModel.findOne({ guildId: interaction.guildId, creatorId: interaction.user.id, threadId: interaction.channel.id })) { interaction.reply({  content: `Başvuruyu sadece sahibi iptal edebilir.` }); return }
+            if (!await ComplaintTicketModel.findOne({ guildId: interaction.guildId, creatorId: interaction.user.id, threadId: interaction.channel.id })) { interaction.reply({ ephemeral: true, content: `Başvuruyu sadece sahibi iptal edebilir.` }); return }
             await interaction.showModal(CancelComplaintModal)
         }
     } catch (error) {
