@@ -93,6 +93,7 @@ addInteraction(async (interaction: ModalSubmitInteraction) => {
     try {
         if (!interaction.isModalSubmit()) { return }
         if (interaction.customId === "ComplaintModal") {
+            await interaction.deferReply({ ephemeral: true })
             await interaction.editReply({  content: 'Şikayetiniz oluşturuluyor..' })
             let RobloxData: { User?: { displayName: string, hasVerifiedBadge: boolean, id: number, name: string, requestedUsername: string }, HeadShotImageData?: { targetId: number, state: string, imageUrl: string }, AvatarBustImageData?: { targetId: number, state: string, imageUrl: string } } | undefined
             if (interaction.fields.fields.get("RobloxUsername").value) {
@@ -172,6 +173,7 @@ addInteraction(async (interaction: ModalSubmitInteraction) => {
             })
             await interaction.editReply({ content: "Şikayetiniz oluşturuldu." })
         } else if (interaction.customId === "CancelComplaintModal") {
+            await interaction.deferReply({ ephemeral: true })
             await interaction.editReply({  content: 'Başvurunuz iptal ediliyor..' })
             await wait(2000)
             const Reason = interaction.fields.fields.get("Reason").value
@@ -187,6 +189,7 @@ addInteraction(async (interaction: ModalSubmitInteraction) => {
             TicketThread.setLocked(true)
             TicketThread.setArchived(true)
         } else if (interaction.customId === "CloseComplaintModal") {
+            await interaction.deferReply({ ephemeral: true })
             await interaction.editReply({  content: 'Şikayet kapatılıyor..' })
             await wait(2000)
             const Reason = interaction.fields.fields.get("Reason").value
@@ -213,7 +216,7 @@ addInteraction(async (interaction: ModalSubmitInteraction) => {
         }
     } catch (error) {
         console.error(error)
-        interaction[interaction.replied ? 'editReply' : 'reply']({ ephemeral: interaction.replied ?  null : true , content: `Bir hata oluştu.` })
+        interaction[interaction.replied || interaction.deferred ? 'editReply' : 'reply']({ ephemeral: interaction.replied || interaction.deferred ?  null : true , content: `Bir hata oluştu.` })
     }
 })
 
@@ -224,6 +227,7 @@ addInteraction(async (interaction: ButtonInteraction) => {
             if (await ComplaintTicketModel.findOne({ guildId: interaction.guildId, creatorId: interaction.user.id, $or: [{ status: ComplaintTicketStatus.WaitingToBeClaimed }, { status: ComplaintTicketStatus.OnGoing }] })) { interaction.editReply({  content: `Zaten hali hazırda devam eden bir şikayetiniz var.` }); return }
             await interaction.showModal(ComplaintModal)
         } else if (interaction.customId === "HandleComplaint") {
+            await interaction.deferReply({ ephemeral: true })
             await interaction.editReply({  content: `Şikayet devralınıyor..` })
             if (!await StaffRolesModel.findOne({ roleId: { $in: (interaction.member as GuildMember).roles.cache.map(({ id }) => id) } })) {
                 await interaction.editReply({  content: `Bu eylem için bir yetkili rolüne ihtiyacınız var.` }); return
@@ -253,15 +257,15 @@ addInteraction(async (interaction: ButtonInteraction) => {
         } else if (interaction.customId === "CloseComplaint") {
             const ComplaintTicket = await ComplaintTicketModel.findOne({ guildId: interaction.guildId, threadId: interaction.channel.id })
             if (!(ComplaintTicket.creatorId === interaction.user.id || await StaffRolesModel.findOne({ roleId: { $in: (interaction.member as GuildMember).roles.cache.map(({ id }) => id) } }))) {
-                await interaction.editReply({  content: `Bu Şikayeti kapatabilmeniz için yetkili veya şikayet sahibi olmanız gerekiyor.` }); return
+                await interaction.reply({  content: `Bu Şikayeti kapatabilmeniz için yetkili veya şikayet sahibi olmanız gerekiyor.` }); return
             }
             await interaction.showModal(CloseComplaintModal)
         } else if (interaction.customId === "CancelComplaint") {
-            if (!await ComplaintTicketModel.findOne({ guildId: interaction.guildId, creatorId: interaction.user.id, threadId: interaction.channel.id })) { interaction.editReply({  content: `Başvuruyu sadece sahibi iptal edebilir.` }); return }
+            if (!await ComplaintTicketModel.findOne({ guildId: interaction.guildId, creatorId: interaction.user.id, threadId: interaction.channel.id })) { interaction.reply({  content: `Başvuruyu sadece sahibi iptal edebilir.` }); return }
             await interaction.showModal(CancelComplaintModal)
         }
     } catch (error) {
         console.error(error)
-        interaction[interaction.replied ? 'editReply' : 'reply']({ ephemeral: interaction.replied ?  null : true , content: `Bir hata oluştu.` })
+        interaction[interaction.replied || interaction.deferred ? 'editReply' : 'reply']({ ephemeral: interaction.replied || interaction.deferred ?  null : true , content: `Bir hata oluştu.` })
     }
 })

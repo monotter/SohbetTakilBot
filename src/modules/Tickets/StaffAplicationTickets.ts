@@ -141,6 +141,7 @@ addInteraction(async (interaction: ModalSubmitInteraction) => {
     try {
         if (!interaction.isModalSubmit()) { return }
         if (interaction.customId === "StaffApplicationModal") {
+            await interaction.deferReply({ ephemeral: true })
             await interaction.editReply({  content: "Başvuru talebiniz oluşturuluyor.." })
             const result = await axios.post("https://users.roblox.com/v1/usernames/users", { "usernames": [interaction.fields.fields.get("RobloxUsername").value], "excludeBannedUsers": true })
             const User = result.data.data[0] as { displayName: string, hasVerifiedBadge: boolean, id: number, name: string, requestedUsername: string } | null
@@ -221,6 +222,7 @@ addInteraction(async (interaction: ModalSubmitInteraction) => {
             await Message.pin()
             await interaction.editReply({ content: "Başvuru talebiniz oluşturuldu." })
         } else if (interaction.customId === "CancelStaffApplicationModal") {
+            await interaction.deferReply({ ephemeral: true })
             await interaction.editReply({  content: 'Başvurunuz iptal ediliyor..' })
             await wait(2000)
             const Reason = interaction.fields.fields.get("Reason").value
@@ -236,6 +238,7 @@ addInteraction(async (interaction: ModalSubmitInteraction) => {
             TicketThread.setLocked(true)
             TicketThread.setArchived(true)
         } else if (interaction.customId === "RefuseStaffApplicationModal") {
+            await interaction.deferReply({ ephemeral: true })
             await interaction.editReply({  content: 'Başvuru reddediliyor..' })
             await wait(2000)
             const Reason = interaction.fields.fields.get("Reason").value
@@ -253,6 +256,7 @@ addInteraction(async (interaction: ModalSubmitInteraction) => {
             TicketThread.setLocked(true)
             TicketThread.setArchived(true)
         } else if (interaction.customId === "AcceptStaffApplicationModal") {
+            await interaction.deferReply({ ephemeral: true })
             await interaction.editReply({  content: 'Başvuru onaylanıyor..' })
             await wait(2000)
             const Reason = interaction.fields.fields.get("Reason").value
@@ -272,7 +276,7 @@ addInteraction(async (interaction: ModalSubmitInteraction) => {
         }
     } catch (error) {
         console.error(error)
-        interaction[interaction.replied ? 'editReply' : 'reply']({ ephemeral: interaction.replied ?  null : true , content: `Bir hata oluştu.` })
+        interaction[interaction.replied || interaction.deferred ? 'editReply' : 'reply']({ ephemeral: interaction.replied || interaction.deferred ?  null : true , content: `Bir hata oluştu.` })
     }
 })
 
@@ -280,28 +284,28 @@ addInteraction(async (interaction: ButtonInteraction) => {
     try {
         if (!interaction.isButton()) { return }
         if (interaction.customId === "StaffApplication") {
-            if (await StaffApplicationTicketModel.findOne({ guildId: interaction.guildId, creatorId: interaction.user.id, status: StaffApplicationTicketStatus.OnGoing })) { interaction.editReply({  content: `Zaten hali hazırda devam eden bir başvurunuz var.` }); return }
-            if (!await StaffApplicationEnabledModel.findOne({ guildId: interaction.guildId })) { interaction.editReply({  content: `Yetkili başvuruları kapalı.` }); return }
+            if (await StaffApplicationTicketModel.findOne({ guildId: interaction.guildId, creatorId: interaction.user.id, status: StaffApplicationTicketStatus.OnGoing })) { interaction.reply({  content: `Zaten hali hazırda devam eden bir başvurunuz var.` }); return }
+            if (!await StaffApplicationEnabledModel.findOne({ guildId: interaction.guildId })) { interaction.reply({  content: `Yetkili başvuruları kapalı.` }); return }
             if (await StaffRolesModel.findOne({ roleId: { $in: (interaction.member as GuildMember).roles.cache.map(({ id }) => id) } })) {
-                await interaction.editReply({  content: `Zaten bir yetkili rolüne sahip olduğunuz için tekrar başvuru yapamazsınız.` }); return
+                await interaction.reply({  content: `Zaten bir yetkili rolüne sahip olduğunuz için tekrar başvuru yapamazsınız.` }); return
             }
             await interaction.showModal(StaffApplicationModal)
         } else if (interaction.customId === "CancelStaffApplication") {
-            if (!await StaffApplicationTicketModel.findOne({ guildId: interaction.guildId, creatorId: interaction.user.id, threadId: interaction.channel.id })) { interaction.editReply({  content: `Başvuruyu sadece sahibi iptal edebilir.` }); return }
+            if (!await StaffApplicationTicketModel.findOne({ guildId: interaction.guildId, creatorId: interaction.user.id, threadId: interaction.channel.id })) { interaction.reply({  content: `Başvuruyu sadece sahibi iptal edebilir.` }); return }
             await interaction.showModal(CancelStaffApplicationModal)
         } else if (interaction.customId === "RefuseStaffApplication") {
             if (!await ManagerRolesModel.findOne({ roleId: { $in: (interaction.member as GuildMember).roles.cache.map(({ id }) => id) } })) {
-                await interaction.editReply({  content: `Bu eylem için bir denetleyici rolüne ihtiyacınız var.` }); return
+                await interaction.reply({  content: `Bu eylem için bir denetleyici rolüne ihtiyacınız var.` }); return
             }
             await interaction.showModal(RefuseStaffApplicationModal)
         } else if (interaction.customId === "AcceptStaffApplication") {
             if (!await ManagerRolesModel.findOne({ roleId: { $in: (interaction.member as GuildMember).roles.cache.map(({ id }) => id) } })) {
-                await interaction.editReply({  content: `Bu eylem için bir denetleyici rolüne ihtiyacınız var.` }); return
+                await interaction.reply({ content: `Bu eylem için bir denetleyici rolüne ihtiyacınız var.` }); return
             }
             await interaction.showModal(AcceptStaffApplicationModal)
         }
     } catch (error) {
         console.error(error)
-        interaction[interaction.replied ? 'editReply' : 'reply']({ ephemeral: interaction.replied ?  null : true , content: `Bir hata oluştu.` })
+        interaction[interaction.replied || interaction.deferred ? 'editReply' : 'reply']({ ephemeral: interaction.replied || interaction.deferred ?  null : true , content: `Bir hata oluştu.` })
     }
 })

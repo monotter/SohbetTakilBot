@@ -11,12 +11,12 @@ addCommand({
 
 addInteraction(async (interaction: ChatInputCommandInteraction) => {
     try {
-        await interaction.deferReply({ ephemeral: true })
         if (!interaction.isChatInputCommand()) { return }
         if (interaction.commandName !== CommandName) { return }
+        await interaction.deferReply({ ephemeral: true })
         await interaction.editReply('Pong!')
     } catch (error) {
         console.error(error)
-        interaction[interaction.replied ? 'editReply' : 'reply']({ ephemeral: interaction.replied ?  null : true , content: `Bir hata oluştu.` })
+        interaction[interaction.replied || interaction.deferred ? 'editReply' : 'reply']({ ephemeral: interaction.replied || interaction.deferred ?  null : true , content: `Bir hata oluştu.` })
     }
 })

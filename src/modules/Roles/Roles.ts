@@ -64,6 +64,6 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
         }
     } catch (error) {
         console.error(error)
-        interaction[interaction.replied ? 'editReply' : 'reply']({ ephemeral: interaction.replied ?  null : true , content: `Bir hata oluştu.` })
+        interaction[interaction.replied || interaction.deferred ? 'editReply' : 'reply']({ ephemeral: interaction.replied || interaction.deferred ?  null : true , content: `Bir hata oluştu.` })
     }
 })
