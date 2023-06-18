@@ -36,14 +36,14 @@ addCommand({
 addInteraction(async (interaction: ChatInputCommandInteraction) => {
     try {
         if (!interaction.isChatInputCommand()) { return }
-        if (!interaction.memberPermissions.has("Administrator")) { interaction.reply({ ephemeral: true, content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
         if (interaction.commandName === "bot-rol-ekle") {
-            await interaction.deferReply()
+            await interaction.deferReply({ ephemeral: true })
+            if (!interaction.memberPermissions.has("Administrator")) { interaction.editReply({  content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
             const roleId = interaction.options.get("rol").role.id
             let update: any = interaction.options.get("guncelle"); update = update ? update.value : update
-            if (await BotRolesModel.findOne({ roleId, guildId: interaction.guildId })) { interaction.reply({ ephemeral: true, content: `Bot rollerinde, <@&${roleId}> rolü zaten mevcut.` }); return }
+            if (await BotRolesModel.findOne({ roleId, guildId: interaction.guildId })) { interaction.editReply({  content: `Bot rollerinde, <@&${roleId}> rolü zaten mevcut.` }); return }
             await BotRolesModel.create({ roleId, guildId: interaction.guildId })
-            await interaction.reply({ ephemeral: true, content: `<@&${roleId}> rolü bot rollerine eklendi.${update ? ' Şu anda tüm botların rolleri güncelleniyor..' : ''}` })
+            await interaction.editReply({  content: `<@&${roleId}> rolü bot rollerine eklendi.${update ? ' Şu anda tüm botların rolleri güncelleniyor..' : ''}` })
 
             if (update) {
                 const members = await interaction.guild.members.fetch()
@@ -57,12 +57,13 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
                 await interaction.editReply({ content: `<@&${roleId}> rolü bot rollerine eklendi. Tüm botların rolleri güncellendi.` })
             }
         } else if (interaction.commandName === "bot-rol-çıkar") {
-            await interaction.deferReply()
+            await interaction.deferReply({ ephemeral: true })
+            if (!interaction.memberPermissions.has("Administrator")) { interaction.editReply({  content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
             const roleId = interaction.options.get("rol").role.id
             let update: any = interaction.options.get("guncelle"); update = update ? update.value : update
-            if (!await BotRolesModel.findOne({ roleId, guildId: interaction.guildId })) { interaction.reply({ ephemeral: true, content: `Bot rollerinde, <@&${roleId}> rolü zaten yok.` }); return }
+            if (!await BotRolesModel.findOne({ roleId, guildId: interaction.guildId })) { interaction.editReply({  content: `Bot rollerinde, <@&${roleId}> rolü zaten yok.` }); return }
             await BotRolesModel.deleteOne({ roleId, guildId: interaction.guildId })
-            await interaction.reply({ ephemeral: true, content: `<@&${roleId}> rolü bot rollerinden kaldırıldı.${update ? ' Şu anda tüm botların rolleri güncelleniyor..' : ''}` })
+            await interaction.editReply({  content: `<@&${roleId}> rolü bot rollerinden kaldırıldı.${update ? ' Şu anda tüm botların rolleri güncelleniyor..' : ''}` })
 
             if (update) {
                 const members = await interaction.guild.members.fetch()
@@ -75,15 +76,17 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
                 await interaction.editReply({ content: `<@&${roleId}> rolü bot rollerinden kaldırıldı. Tüm botların rolleri güncellendi.` })
             }
         } else if (interaction.commandName === "bot-rol-göster") {
-            await interaction.deferReply()
+            await interaction.deferReply({ ephemeral: true })
+            if (!interaction.memberPermissions.has("Administrator")) { interaction.editReply({  content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
             const roles = await BotRolesModel.find({ guildId: interaction.guildId })
             if (roles.length <= 0) {
-                interaction.reply({ ephemeral: true, content: `Bot rollerinde hiç bir rol bulunmamakta.` })
+                interaction.editReply({  content: `Bot rollerinde hiç bir rol bulunmamakta.` })
             } else {
-                interaction.reply({ ephemeral: true, content: `${roles.map(({ roleId }) => `<@&${roleId}>`).join(`, `)} rolleri bot rollerinde mevcut.` })
+                interaction.editReply({  content: `${roles.map(({ roleId }) => `<@&${roleId}>`).join(`, `)} rolleri bot rollerinde mevcut.` })
             }
         } else if (interaction.commandName === "bot-rol-guncelle") {
-            await interaction.deferReply()
+            await interaction.deferReply({ ephemeral: true })
+            if (!interaction.memberPermissions.has("Administrator")) { interaction.editReply({  content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
             const roles = await BotRolesModel.find({ guildId: interaction.guildId })
             const members = await interaction.guild.members.fetch()
             const Promises = []
@@ -98,7 +101,7 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
                     }
                 })
             })
-            await interaction.reply({ ephemeral: true, content: `Botların rolleri güncelleniyor..` })
+            await interaction.editReply({  content: `Botların rolleri güncelleniyor..` })
             await Promise.all(Promises)
             await interaction.editReply({ content: `Botların rolleri güncellendi.` })
         }

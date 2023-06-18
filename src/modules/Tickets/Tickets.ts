@@ -28,8 +28,8 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
     try {
         if (!interaction.isChatInputCommand()) { return }
         if (interaction.commandName === "ticket-mesajı-gönder") {
-            if (!interaction.memberPermissions.has("Administrator")) { interaction.reply({ ephemeral: true, content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
-            await interaction.deferReply()
+            await interaction.deferReply({ ephemeral: true })
+            if (!interaction.memberPermissions.has("Administrator")) { interaction.editReply({  content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
             const TicketChannel = await interaction.guild.channels.fetch(interaction.options.get("kanal").channel.id) as TextChannel
             if (!TicketChannel) { return }
             TicketChannel.send({
@@ -56,21 +56,21 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
                     })
                 ]
             })
-            interaction.reply({ ephemeral: true, content: `Ticket mesajı gönderildi.` })
+            interaction.editReply({  content: `Ticket mesajı gönderildi.` })
         } else if (interaction.commandName === "yetkili-alım-durumu") {
+            await interaction.deferReply({ ephemeral: true })
             if (!await ManagerRolesModel.findOne({ roleId: { $in: (interaction.member as GuildMember).roles.cache.map(({ id }) => id) } })) {
-                await interaction.reply({ ephemeral: true, content: `Bu eylem için bir denetleyici rolüne ihtiyacınız var.` }); return
+                await interaction.editReply({  content: `Bu eylem için bir denetleyici rolüne ihtiyacınız var.` }); return
             }
-            await interaction.deferReply()
             const status = interaction.options.get("durum").value
             if (status) {
-                if (await StaffApplicationEnabledModel.findOne({ guildId: interaction.guildId })) { interaction.reply({ ephemeral: true, content: `Yetkili başvuruları zaten açık.` }); return }
+                if (await StaffApplicationEnabledModel.findOne({ guildId: interaction.guildId })) { interaction.editReply({  content: `Yetkili başvuruları zaten açık.` }); return }
                 await StaffApplicationEnabledModel.create({ guildId: interaction.guildId })
-                interaction.reply({ ephemeral: true, content: `Yetkili başvuruları açıldı.` })
+                interaction.editReply({  content: `Yetkili başvuruları açıldı.` })
             } else {
-                if (!await StaffApplicationEnabledModel.findOne({ guildId: interaction.guildId })) { interaction.reply({ ephemeral: true, content: `Yetkili başvuruları zaten kapalı.` }); return }
+                if (!await StaffApplicationEnabledModel.findOne({ guildId: interaction.guildId })) { interaction.editReply({  content: `Yetkili başvuruları zaten kapalı.` }); return }
                 await StaffApplicationEnabledModel.deleteOne({ guildId: interaction.guildId })
-                interaction.reply({ ephemeral: true, content: `Yetkili başvuruları kapandı.` })
+                interaction.editReply({  content: `Yetkili başvuruları kapandı.` })
             }
         }
     } catch (error) {

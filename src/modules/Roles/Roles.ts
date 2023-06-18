@@ -21,9 +21,9 @@ addCommand({
 addInteraction(async (interaction: ChatInputCommandInteraction) => {
     try {
         if (!interaction.isChatInputCommand()) { return }
-        if (!interaction.memberPermissions.has("Administrator")) { interaction.reply({ ephemeral: true, content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
         if (interaction.commandName === "rol-ver") {
-            await interaction.deferReply()
+            await interaction.deferReply({ ephemeral: true })
+            if (!interaction.memberPermissions.has("Administrator")) { interaction.editReply({  content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
             const group = interaction.options.get("grup")
             const roleId = interaction.options.get("rol").role.id
             const Promises = []
@@ -38,11 +38,12 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
                 if ((group.member as GuildMember).roles.cache.has(roleId)) { return }
                 Promises.push((group.member as GuildMember).roles.add(roleId))
             }
-            await interaction.reply({ ephemeral: true, content: `${group.role ? `<@${group.role.id}> grubuna` : group.member ? `<@&${group.user.id}> üyesine` : ''} <@&${roleId}> rolü veriliyor..` })
+            await interaction.editReply({  content: `${group.role ? `<@${group.role.id}> grubuna` : group.member ? `<@&${group.user.id}> üyesine` : ''} <@&${roleId}> rolü veriliyor..` })
             await Promise.all(Promises)
             await interaction.editReply({ content: `${group.role ? `<@${group.role.id}> grubuna` : group.member ? `<@&${group.user.id}> üyesine` : ''} <@&${roleId}> rolü verildi.` })
         } else if (interaction.commandName === "rol-al") {
-            await interaction.deferReply()
+            await interaction.deferReply({ ephemeral: true })
+            if (!interaction.memberPermissions.has("Administrator")) { interaction.editReply({  content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
             const group = interaction.options.get("grup")
             const roleId = interaction.options.get("rol").role.id
             const Promises = []
@@ -57,7 +58,7 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
                 if ((group.member as GuildMember).roles.cache.has(roleId)) { return }
                 Promises.push((group.member as GuildMember).roles.add(roleId))
             }
-            await interaction.reply({ ephemeral: true, content: `${group.role ? `<@${group.role.id}> grubundan` : group.member ? `<@&${group.user.id}> üyesinden` : ''} <@&${roleId}> rolü alınıyor..` })
+            await interaction.editReply({  content: `${group.role ? `<@${group.role.id}> grubundan` : group.member ? `<@&${group.user.id}> üyesinden` : ''} <@&${roleId}> rolü alınıyor..` })
             await Promise.all(Promises)
             await interaction.editReply({ content: `${group.role ? `<@${group.role.id}> grubundan` : group.member ? `<@&${group.user.id}> üyesinden` : ''} <@&${roleId}> rolü alındı.` })
         }

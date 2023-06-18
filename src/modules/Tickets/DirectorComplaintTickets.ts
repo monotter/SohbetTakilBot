@@ -93,14 +93,14 @@ addInteraction(async (interaction: ModalSubmitInteraction) => {
     try {
         if (!interaction.isModalSubmit()) { return }
         if (interaction.customId === "DirectorComplaintModal") {
-            await interaction.reply({ ephemeral: true, content: "Direktör şikayetiniz oluşturuluyor.." })
+            await interaction.editReply({  content: "Direktör şikayetiniz oluşturuluyor.." })
             let RobloxData: { User?: { displayName: string, hasVerifiedBadge: boolean, id: number, name: string, requestedUsername: string }, HeadShotImageData?: { targetId: number, state: string, imageUrl: string }, AvatarBustImageData?: { targetId: number, state: string, imageUrl: string } } | undefined
             if (interaction.fields.fields.get("RobloxUsername").value) {
                 RobloxData = {}
                 const result = await axios.post("https://users.roblox.com/v1/usernames/users", { "usernames": [interaction.fields.fields.get("RobloxUsername").value], "excludeBannedUsers": true })
                 RobloxData.User = result.data.data[0] as { displayName: string, hasVerifiedBadge: boolean, id: number, name: string, requestedUsername: string } | null
                 if (!RobloxData.User) {
-                    await interaction.reply({ ephemeral: true, content: "Girdiğiniz Roblox hesabı mevcut değil veya yasaklı olduğundan formunuz geçersizdir." })
+                    await interaction.editReply({  content: "Girdiğiniz Roblox hesabı mevcut değil veya yasaklı olduğundan formunuz geçersizdir." })
                     return
                 }
                 RobloxData.HeadShotImageData = (await axios.get(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${RobloxData.User.id}&size=420x420&format=Png&isCircular=false`)).data.data[0]
@@ -170,7 +170,7 @@ addInteraction(async (interaction: ModalSubmitInteraction) => {
             await Message.pin()
             await interaction.editReply({ content: "Direktör şikayetiniz oluşturuldu." })
         } else if (interaction.customId === "CloseDirectorComplaintModal") {
-            await interaction.reply({ ephemeral: true, content: 'Şikayet kapatılıyor..' })
+            await interaction.editReply({  content: 'Şikayet kapatılıyor..' })
             await wait(2000)
             const Reason = interaction.fields.fields.get("Reason").value
             const TicketThread = interaction.channel as ThreadChannel
@@ -204,12 +204,12 @@ addInteraction(async (interaction: ButtonInteraction) => {
     try {
         if (!interaction.isButton()) { return }
         if (interaction.customId === "DirectorComplaint") {
-            if (await DirectorComplaintTicketModel.findOne({ guildId: interaction.guildId, creatorId: interaction.user.id, status: DirectorComplaintTicketStatus.OnGoing })) { interaction.reply({ ephemeral: true, content: `Zaten hali hazırda devam eden bir şikayetiniz var.` }); return }
+            if (await DirectorComplaintTicketModel.findOne({ guildId: interaction.guildId, creatorId: interaction.user.id, status: DirectorComplaintTicketStatus.OnGoing })) { interaction.editReply({  content: `Zaten hali hazırda devam eden bir şikayetiniz var.` }); return }
             await interaction.showModal(DirectorComplaintModal)
         } else if (interaction.customId === "CloseDirectorComplaint") {
             const DirectorComplaintTicket = await DirectorComplaintTicketModel.findOne({ guildId: interaction.guildId, threadId: interaction.channelId })
             if (!(DirectorComplaintTicket.creatorId === interaction.user.id || await DirectorRolesModel.findOne({ roleId: { $in: (interaction.member as GuildMember).roles.cache.map(({ id }) => id) } }))) {
-                await interaction.reply({ ephemeral: true, content: `Bu Şikayeti kapatabilmeniz için direktör veya şikayet sahibi olmanız gerekiyor.` }); return
+                await interaction.editReply({  content: `Bu Şikayeti kapatabilmeniz için direktör veya şikayet sahibi olmanız gerekiyor.` }); return
             }
             await interaction.showModal(CloseDirectorComplaintModal)
         }

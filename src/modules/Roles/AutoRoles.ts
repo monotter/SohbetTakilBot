@@ -34,14 +34,14 @@ addCommand({
 addInteraction(async (interaction: ChatInputCommandInteraction) => {
     try {
         if (!interaction.isChatInputCommand()) { return }
-        if (!interaction.memberPermissions.has("Administrator")) { interaction.reply({ ephemeral: true, content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
         if (interaction.commandName === "oto-rol-ekle") {
-            await interaction.deferReply()
+            await interaction.deferReply({ ephemeral: true })
+            if (!interaction.memberPermissions.has("Administrator")) { interaction.editReply({  content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
             const roleId = interaction.options.get("rol").role.id
             let update: any = interaction.options.get("guncelle"); update = update ? update.value : update
-            if (await AutoRolesModel.findOne({ roleId, guildId: interaction.guildId })) { interaction.reply({ ephemeral: true, content: `Otomatik rollerde, <@&${roleId}> rolü zaten mevcut.` }); return }
+            if (await AutoRolesModel.findOne({ roleId, guildId: interaction.guildId })) { interaction.editReply({  content: `Otomatik rollerde, <@&${roleId}> rolü zaten mevcut.` }); return }
             await AutoRolesModel.create({ roleId, guildId: interaction.guildId })
-            await interaction.reply({ ephemeral: true, content: `<@&${roleId}> rolü otomatik rollere eklendi.${ update ? ' Şu anda herkesin rolleri güncelleniyor..' : '' }` })
+            await interaction.editReply({  content: `<@&${roleId}> rolü otomatik rollere eklendi.${ update ? ' Şu anda herkesin rolleri güncelleniyor..' : '' }` })
 
             if (update) {
                 const members = await interaction.guild.members.fetch()
@@ -55,12 +55,13 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
                 await interaction.editReply({ content: `<@&${roleId}> rolü otomatik rollere eklendi. Herkesin rolleri güncellendi.` })
             }
         } else if (interaction.commandName === "oto-rol-çıkar") {
-            await interaction.deferReply()
+            await interaction.deferReply({ ephemeral: true })
+            if (!interaction.memberPermissions.has("Administrator")) { interaction.editReply({  content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
             const roleId = interaction.options.get("rol").role.id
             let update: any = interaction.options.get("guncelle"); update = update ? update.value : update
-            if (!await AutoRolesModel.findOne({ roleId, guildId: interaction.guildId })) { interaction.reply({ ephemeral: true, content: `Otomatik rollerde, <@&${roleId}> rolü zaten yok.` }); return }
+            if (!await AutoRolesModel.findOne({ roleId, guildId: interaction.guildId })) { interaction.editReply({  content: `Otomatik rollerde, <@&${roleId}> rolü zaten yok.` }); return }
             await AutoRolesModel.deleteOne({ roleId, guildId: interaction.guildId })
-            await interaction.reply({ ephemeral: true, content: `<@&${roleId}> rolü otomatik rollerden kaldırıldı.${ update ? ' Şu anda herkesin rolleri güncelleniyor..' : '' }` })
+            await interaction.editReply({  content: `<@&${roleId}> rolü otomatik rollerden kaldırıldı.${ update ? ' Şu anda herkesin rolleri güncelleniyor..' : '' }` })
 
             if (update) {
                 const members = await interaction.guild.members.fetch()
@@ -73,15 +74,17 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
                 await interaction.editReply({ content: `<@&${roleId}> rolü otomatik rollerden kaldırıldı. Herkesin rolleri güncellendi.` })
             }
         } else if (interaction.commandName === "oto-rol-göster") {
-            await interaction.deferReply()
+            await interaction.deferReply({ ephemeral: true })
+            if (!interaction.memberPermissions.has("Administrator")) { interaction.editReply({  content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
             const roles = await AutoRolesModel.find({ guildId: interaction.guildId })
             if (roles.length <= 0) {
-                interaction.reply({ ephemeral: true, content: `Otomatik rollerde hiç bir rol bulunmamakta.` })
+                interaction.editReply({  content: `Otomatik rollerde hiç bir rol bulunmamakta.` })
             } else {
-                interaction.reply({ ephemeral: true, content: `${roles.map(({ roleId }) => `<@&${roleId}>`).join(`, `)} rolleri otomatik rollerde mevcut.` })
+                interaction.editReply({  content: `${roles.map(({ roleId }) => `<@&${roleId}>`).join(`, `)} rolleri otomatik rollerde mevcut.` })
             }
         } else if (interaction.commandName === "oto-rol-guncelle") {
-            await interaction.deferReply()
+            await interaction.deferReply({ ephemeral: true })
+            if (!interaction.memberPermissions.has("Administrator")) { interaction.editReply({  content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
             const roles = await AutoRolesModel.find({ guildId: interaction.guildId })
             const members = await interaction.guild.members.fetch()
             const Promises = []
@@ -92,7 +95,7 @@ addInteraction(async (interaction: ChatInputCommandInteraction) => {
                     Promises.push(member.roles.add(roleId))
                 })
             })
-            await interaction.reply({ ephemeral: true, content: `Üyelerin otomatik rolleri güncelleniyor..` })
+            await interaction.editReply({  content: `Üyelerin otomatik rolleri güncelleniyor..` })
             await Promise.all(Promises)
             await interaction.editReply({ content: `Üyelerin otomatik rolleri güncellendi.` })
         }
