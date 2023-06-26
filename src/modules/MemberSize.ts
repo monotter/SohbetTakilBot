@@ -42,10 +42,11 @@ CreateChatCommand({
 try {
     ServerSettingsCache.forEach(async ({ guildId, memberSizeChannel: { channelId, name } }) => {
         try {
+            if (!channelId) { return }
             const guild = await client.guilds.fetch(guildId)
-            const channel = guild && await guild.channels.fetch(channelId)
+            const channel = guild &&  await guild.channels.fetch(channelId)
             if (!channel) { return }
-            channel.setName(name.replace("{sayı}", guild.memberCount.toString()))
+            channel.setName((name ? name : '').replace("{sayı}", guild.memberCount.toString()))
         } catch (error) {
             console.error(error)
         }

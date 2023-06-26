@@ -1,4 +1,4 @@
-import { ButtonBuilder, ActionRowBuilder, ApplicationCommandOptionType, TextChannel, GuildMember } from "discord.js"
+import { ButtonBuilder, ActionRowBuilder, ApplicationCommandOptionType, TextChannel, GuildMember, ComponentType, ButtonStyle } from "discord.js"
 import { ManagerRolesModel } from "../Roles/ManagerRoles.js"
 import { CreateChatCommand } from "../Interactor.js"
 import { SetServerSetting, GetServerSetting } from "../ServerSettings.js"
@@ -17,6 +17,7 @@ CreateChatCommand({
     if (!interaction.memberPermissions.has("Administrator")) { interaction.editReply({  content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
     const TicketChannel = await interaction.guild.channels.fetch(interaction.options.get("kanal").channel.id) as TextChannel
     if (!TicketChannel) { return }
+
     TicketChannel.send({
         content: 'Aşağıdaki butonlar ile çeşitli amaçlar üzerine Ticket oluşturabilirsiniz.',
         components: [

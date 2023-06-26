@@ -1,5 +1,4 @@
-import { ButtonBuilder, ModalBuilder } from "@discordjs/builders";
-import { APIButtonComponentWithCustomId, APIModalInteractionResponseCallbackData, Awaitable, ButtonInteraction, ClientEvents, CommandInteraction, ModalSubmitInteraction } from "discord.js";
+import { ButtonBuilder, ModalBuilder, APIButtonComponentWithCustomId, APIModalInteractionResponseCallbackData, Awaitable, ButtonInteraction, ClientEvents, CommandInteraction, ModalSubmitInteraction } from "discord.js";
 import { CommandInteractions, DiscordEvents } from "../client.js";
 import { CommandDataType, Replace } from "./Types.js";
 
