@@ -3,25 +3,25 @@ import { rest, client, DiscordEvents, CommandInteractions } from '../client.js'
 export const controller = {
     status: true
 }
-// import "./WelcomeMessage.js"
-// import "./MemberSize.js"
+import "./WelcomeMessage.js"
+import "./MemberSize.js"
 
-// import "./Roles/Roles.js"
-// import "./Roles/AutoRoles.js"
-// import "./Roles/BoosterRoles.js"
-// import "./Roles/BotRoles.js"
+import "./Roles/Roles.js"
+import "./Roles/AutoRoles.js"
+import "./Roles/BoosterRoles.js"
+import "./Roles/BotRoles.js"
 
-// import "./Roles/StaffRoles.js"
-// import "./Roles/ManagerRoles.js"
-// import "./Roles/DirectorRoles.js"
+import "./Roles/StaffRoles.js"
+import "./Roles/ManagerRoles.js"
+import "./Roles/DirectorRoles.js"
 
-// import "./Ping.js"
+import "./Ping.js"
 
 
-// import "./Tickets/DirectorComplaintTickets.js"
-// import "./Tickets/StaffAplicationTickets.js"
-// import "./Tickets/ComplaintTickets.js"
-// import "./Tickets/Tickets.js"
+import "./Tickets/DirectorComplaintTickets.js"
+import "./Tickets/StaffAplicationTickets.js"
+import "./Tickets/ComplaintTickets.js"
+import "./Tickets/Tickets.js"
 import "./PrivateRoom.js"
 
 try {
