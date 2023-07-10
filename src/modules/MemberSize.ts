@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType } from "discord.js";
+import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 import { client } from "../client.js";
 import { CreateChatCommand, CreateEvent } from "./Interactor.js";
 import { GetServerSetting, ServerSettingsCache, SetServerSetting } from "./ServerSettings.js";
@@ -6,6 +6,7 @@ import { GetServerSetting, ServerSettingsCache, SetServerSetting } from "./Serve
 CreateChatCommand({
     name: "üye-sayısı-kanalı-ayarla",
     description: "Üye sayısı kanalını ayarlar",
+    default_member_permissions: PermissionFlagsBits.Administrator.toString(),
     options: [
         { name: "kanal", type: ApplicationCommandOptionType.Channel, description: "İsmi üye sayısına değişecek kanal", required: true },
         { name: "isim_sablonu", type: ApplicationCommandOptionType.String, description: "Kanalın ismi, {sayı} olarak belirttiğiniz yeri üye sayısına çevirir.", required: true }
@@ -20,7 +21,8 @@ CreateChatCommand({
 })
 CreateChatCommand({
     name: "üye-sayısı-kanalı-kaldır",
-    description: "Üye sayısı kanalını iptal eder."
+    description: "Üye sayısı kanalını iptal eder.",
+    default_member_permissions: PermissionFlagsBits.Administrator.toString(),
 }, async (interaction) => {
     await interaction.deferReply({ ephemeral: true })
     if (!interaction.memberPermissions.has("Administrator")) { interaction.editReply({  content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
@@ -32,6 +34,7 @@ CreateChatCommand({
 CreateChatCommand({
     name: "üye-sayısı-kanalı-göster",
     description: "Üye sayısı kanalını gösterir.",
+    default_member_permissions: PermissionFlagsBits.Administrator.toString(),
 }, async (interaction) => {
     if (!interaction.memberPermissions.has("Administrator")) { interaction.editReply({  content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
     const memberSizeChannel = await GetServerSetting(interaction.guildId, 'memberSizeChannel')

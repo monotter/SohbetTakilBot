@@ -30,12 +30,14 @@ try {
     DiscordEvents.forEach((Listeners, Event) => {
         client.on(Event, (...args) => {
             Listeners.forEach((Listener) => {
-                try {
-                    if (!controller.status) { return }
-                    Listener(...args)
-                } catch (error) {
-                    console.error(error)
-                }
+                if (!controller.status) { return }
+                ; (async () => {
+                    try {
+                        await Listener(...args)
+                    } catch (error) {
+                        console.error(error)
+                    }
+                })()
             })
         })
     })

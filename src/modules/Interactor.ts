@@ -1,4 +1,4 @@
-import { ButtonBuilder, ModalBuilder, APIButtonComponentWithCustomId, APIModalInteractionResponseCallbackData, Awaitable, ButtonInteraction, ClientEvents, CommandInteraction, ModalSubmitInteraction } from "discord.js";
+import { ButtonBuilder, ModalBuilder, APIButtonComponentWithCustomId, APIModalInteractionResponseCallbackData, Awaitable, ButtonInteraction, ClientEvents, CommandInteraction, ModalSubmitInteraction, AutocompleteInteraction } from "discord.js";
 import { CommandInteractions, DiscordEvents } from "../client.js";
 import { CommandDataType, Replace } from "./Types.js";
 
@@ -7,15 +7,22 @@ export function CreateEvent<K extends keyof ClientEvents>(Event: K, RunFunction:
     const EventSet = DiscordEvents.get(Event)
     EventSet.add(RunFunction)
 }
-export function CreateChatCommand<name extends string>(CommandData: CommandDataType<name>, RunFunction: (interaction: Replace<CommandInteraction, 'commandName', name>, Data: URLSearchParams) => Awaitable<void>) {
+export function CreateChatCommand<name extends string>(CommandData: CommandDataType<name>, RunFunction: (interaction: Replace<CommandInteraction, 'commandName', name>, Data: URLSearchParams) => Awaitable<void>, AutoComplete?: (interaction: Replace<AutocompleteInteraction, 'commandName', name>, Data: URLSearchParams) => Awaitable<void>) {
     CommandInteractions.set(CommandData.name, CommandData)
     CreateEvent("interactionCreate", (interaction) => {
-        if (!interaction.isChatInputCommand()) { return }
-        const State = interaction.commandName.split("?")
-        const CommandName = State[0]
-        const Data = new URLSearchParams(State[1])
-        if (CommandName !== CommandData.name) { return }
-        RunFunction(interaction as any, Data)
+        if (interaction.isChatInputCommand()) {
+            const State = interaction.commandName.split("?")
+            const CommandName = State[0]
+            const Data = new URLSearchParams(State[1])
+            if (CommandName !== CommandData.name) { return }
+            RunFunction(interaction as any, Data)
+        } else if (interaction.isAutocomplete()) {
+            const State = interaction.commandName.split("?")
+            const CommandName = State[0]
+            const Data = new URLSearchParams(State[1])
+            if (CommandName !== CommandData.name) { return }
+            AutoComplete(interaction as any, Data)
+        }
     })
 }
 export function CreateModalInteraction<customId extends string>(ModalData: Replace<Partial<APIModalInteractionResponseCallbackData>, 'custom_id', customId>, RunFunction: (interaction: Replace<ModalSubmitInteraction, 'customId', customId>, Data: URLSearchParams) => Awaitable<void>) {

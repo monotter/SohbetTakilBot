@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType } from "discord.js";
+import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 import { model, Schema } from "mongoose";
 import { CreateChatCommand } from "../Interactor.js";
 
@@ -10,6 +10,7 @@ export const ManagerRolesModel = model("ManagerRoles", new Schema({
 CreateChatCommand({
     name: "denetleyici-rol-ekle",
     description: "Belirtilen rolü denetleyici rollerine ekler.",
+    default_member_permissions: PermissionFlagsBits.Administrator.toString(),
     options: [
         { name: "rol", type: ApplicationCommandOptionType.Role, description: "Eklenecek denetleyici rolü", required: true }
     ]
@@ -24,6 +25,7 @@ CreateChatCommand({
 CreateChatCommand({
     name: "denetleyici-rol-çıkar",
     description: "Belirtilen rolü denetleyici rollerinden çıkarır.",
+    default_member_permissions: PermissionFlagsBits.Administrator.toString(),
     options: [
         { name: "rol", type: ApplicationCommandOptionType.Role, description: "Kaldırılacak denetleyici rolü", required: true }
     ]
@@ -37,7 +39,8 @@ CreateChatCommand({
 })
 CreateChatCommand({
     name: "denetleyici-rol-göster",
-    description: "Sunucudaki denetleyici rollerini gösterir."
+    description: "Sunucudaki denetleyici rollerini gösterir.",
+    default_member_permissions: PermissionFlagsBits.Administrator.toString(),
 }, async (interaction) => {
     await interaction.deferReply({ ephemeral: true })
     if (!interaction.memberPermissions.has("Administrator")) { interaction.editReply({  content: `Bu komutu kullanabilmek için denetleyici değilsiniz.` }); return }

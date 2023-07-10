@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, AttachmentBuilder, TextChannel } from "discord.js";
+import { ApplicationCommandOptionType, AttachmentBuilder, TextChannel, PermissionFlagsBits } from "discord.js";
 import { createCanvas, loadImage } from "canvas";
 import { CreateChatCommand, CreateEvent } from "./Interactor.js";
 import { client } from "../client.js";
@@ -7,6 +7,7 @@ import { GetServerSetting, SetServerSetting } from "./ServerSettings.js";
 CreateChatCommand({
     name: "hoşgeldin-kanalı-ayarla",
     description: "Hoş geldin mesajının kanalını ayarlar",
+    default_member_permissions: PermissionFlagsBits.Administrator.toString(),
     options: [
         { name: "kanal", type: ApplicationCommandOptionType.Channel, description: "Hoş geldin mesajlarının atılacağı kanal", required: true }
     ]
@@ -21,6 +22,7 @@ CreateChatCommand({
 CreateChatCommand({
     name: "hoşgeldin-kanalı-kaldır",
     description: "Hoş geldin kanalını iptal eder.",
+    default_member_permissions: PermissionFlagsBits.Administrator.toString(),
 }, async (interaction) => {
     await interaction.deferReply({ ephemeral: true })
     if (!interaction.memberPermissions.has("Administrator")) { interaction.editReply({  content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
@@ -33,6 +35,7 @@ CreateChatCommand({
 CreateChatCommand({
     name: "hoşgeldin-kanalı-göster",
     description: "Hoş geldin kanalını gösterir.",
+    default_member_permissions: PermissionFlagsBits.Administrator.toString(),
 }, async (interaction) => {
     await interaction.deferReply({ ephemeral: true })
 

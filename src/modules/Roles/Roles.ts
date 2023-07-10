@@ -1,8 +1,9 @@
-import { ApplicationCommandOptionType, GuildMember } from "discord.js";
+import { ApplicationCommandOptionType, GuildMember, PermissionFlagsBits } from "discord.js";
 import { CreateChatCommand } from "../Interactor.js";
 CreateChatCommand({
     name: "rol-al",
     description: "Etiketlenen grupdan belirtilen rolü alır.",
+    default_member_permissions: PermissionFlagsBits.Administrator.toString(),
     options: [
         { name: "grup", type: ApplicationCommandOptionType.Mentionable, description: "Rol alınacak grup", required: true },
         { name: "rol", type: ApplicationCommandOptionType.Role, description: "Alınacak rol", required: true }
@@ -31,6 +32,7 @@ CreateChatCommand({
 CreateChatCommand({
     name: "rol-ver",
     description: "Etiketlenen gruba belirtilen rolü verir.",
+    default_member_permissions: PermissionFlagsBits.Administrator.toString(),
     options: [
         { name: "grup", type: ApplicationCommandOptionType.Mentionable, description: "Rol verilecek grup", required: true },
         { name: "rol", type: ApplicationCommandOptionType.Role, description: "Verilecek rol", required: true }

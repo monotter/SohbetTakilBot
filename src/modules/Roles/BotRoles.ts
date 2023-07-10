@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType } from "discord.js";
+import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 import { model, Schema } from "mongoose";
 import { CreateEvent, CreateChatCommand } from "../Interactor.js";
 
@@ -10,6 +10,7 @@ const BotRolesModel = model("BotRoles", new Schema({
 CreateChatCommand({
     name: "bot-rol-ekle",
     description: "Belirtilen rolü bot rollerine ekler.",
+    default_member_permissions: PermissionFlagsBits.Administrator.toString(),
     options: [
         { name: "rol", type: ApplicationCommandOptionType.Role, description: "Eklenecek bot rolü", required: true },
         { name: "guncelle", type: ApplicationCommandOptionType.Boolean, description: "Sunucudaki herkesin rolleri güncellensin mi?", required: false }
@@ -38,6 +39,7 @@ CreateChatCommand({
 CreateChatCommand({
     name: "bot-rol-çıkar",
     description: "Belirtilen rolü bot rollerinden çıkarır.",
+    default_member_permissions: PermissionFlagsBits.Administrator.toString(),
     options: [
         { name: "rol", type: ApplicationCommandOptionType.Role, description: "Kaldırılacak bot rolü", required: true },
         { name: "guncelle", type: ApplicationCommandOptionType.Boolean, description: "Sunucudaki herkesin rolleri güncellensin mi?", required: false }
@@ -64,7 +66,8 @@ CreateChatCommand({
 })
 CreateChatCommand({
     name: "bot-rol-göster",
-    description: "Sunucudaki bot rollerini gösterir."
+    description: "Sunucudaki bot rollerini gösterir.",
+    default_member_permissions: PermissionFlagsBits.Administrator.toString(),
 }, async (interaction) => {
     await interaction.deferReply({ ephemeral: true })
     if (!interaction.memberPermissions.has("Administrator")) { interaction.editReply({  content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
@@ -77,7 +80,8 @@ CreateChatCommand({
 })
 CreateChatCommand({
     name: "bot-rol-guncelle",
-    description: "Sunucudaki botların rollerini günceller."
+    description: "Sunucudaki botların rollerini günceller.",
+    default_member_permissions: PermissionFlagsBits.Administrator.toString(),
 }, async (interaction) => {
     await interaction.deferReply({ ephemeral: true })
     if (!interaction.memberPermissions.has("Administrator")) { interaction.editReply({  content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }

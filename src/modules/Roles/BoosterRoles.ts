@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType } from "discord.js";
+import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 import { model, Schema } from "mongoose";
 import { CreateEvent, CreateChatCommand } from "../Interactor.js";
 
@@ -9,6 +9,7 @@ const BoosterRolesModel = model("BoosterRoles", new Schema({
 CreateChatCommand({
     name: "takviyeci-rol-ekle",
     description: "Belirtilen rolü ototmatik rollere ekler.",
+    default_member_permissions: PermissionFlagsBits.Administrator.toString(),
     options: [
         { name: "rol", type: ApplicationCommandOptionType.Role, description: "Eklenecek takviyeci rol", required: true },
         { name: "guncelle", type: ApplicationCommandOptionType.Boolean, description: "Sunucudaki herkesin rolleri güncellensin mi?", required: false }
@@ -37,6 +38,7 @@ CreateChatCommand({
 CreateChatCommand({
     name: "takviyeci-rol-çıkar",
     description: "Belirtilen rolü ototmatik rollerden çıkarır.",
+    default_member_permissions: PermissionFlagsBits.Administrator.toString(),
     options: [
         { name: "rol", type: ApplicationCommandOptionType.Role, description: "Kaldırılacak takviyeci rol", required: true },
         { name: "guncelle", type: ApplicationCommandOptionType.Boolean, description: "Sunucudaki herkesin rolleri güncellensin mi?", required: false }
@@ -63,7 +65,8 @@ CreateChatCommand({
 })
 CreateChatCommand({
     name: "takviyeci-rol-göster",
-    description: "Sunucudaki takviyeci rolleri gösterir."
+    description: "Sunucudaki takviyeci rolleri gösterir.",
+    default_member_permissions: PermissionFlagsBits.Administrator.toString(),
 }, async (interaction) => {
     await interaction.deferReply({ ephemeral: true })
     if (!interaction.memberPermissions.has("Administrator")) { interaction.editReply({  content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
@@ -76,7 +79,8 @@ CreateChatCommand({
 })
 CreateChatCommand({
     name: "takviyeci-rol-guncelle",
-    description: "Sunucudaki herkesin takviyeci rollerini günceller."
+    description: "Sunucudaki herkesin takviyeci rollerini günceller.",
+    default_member_permissions: PermissionFlagsBits.Administrator.toString(),
 }, async (interaction) => {
     await interaction.deferReply({ ephemeral: true })
     if (!interaction.memberPermissions.has("Administrator")) { interaction.editReply({  content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }

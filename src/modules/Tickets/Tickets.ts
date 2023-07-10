@@ -1,4 +1,4 @@
-import { ButtonBuilder, ActionRowBuilder, ApplicationCommandOptionType, TextChannel, GuildMember, ComponentType, ButtonStyle } from "discord.js"
+import { ButtonBuilder, ActionRowBuilder, ApplicationCommandOptionType, TextChannel, GuildMember, PermissionFlagsBits } from "discord.js"
 import { ManagerRolesModel } from "../Roles/ManagerRoles.js"
 import { CreateChatCommand } from "../Interactor.js"
 import { SetServerSetting, GetServerSetting } from "../ServerSettings.js"
@@ -9,6 +9,7 @@ import { StaffApplicationButton } from "./StaffAplicationTickets.js"
 CreateChatCommand({
     name: "ticket-mesajı-gönder",
     description: "Ticket mesajını belirtilen kanala gönder.",
+    default_member_permissions: PermissionFlagsBits.Administrator.toString(),
     options: [
         { name: "kanal", type: ApplicationCommandOptionType.Channel, description: "Ticket mesajının atılacağı kanal", required: true }
     ]
@@ -35,6 +36,7 @@ CreateChatCommand({
 CreateChatCommand({
     name: "yetkili-alım-durumu",
     description: "Yetkili alım durumunu ayarlar.",
+    default_member_permissions: PermissionFlagsBits.Administrator.toString(),
     options: [
         { name: "durum", type: ApplicationCommandOptionType.Boolean, description: "Yetkili alım durumu", required: true }
     ]

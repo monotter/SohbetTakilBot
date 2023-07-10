@@ -1,0 +1,55 @@
+odalar {
+    [mesaj, kanal]
+    [mesaj]
+}
+
+giriş izinleri {
+    [kişi, kanal]
+}
+
+
+
+[  ] - kanal
+
+[  ] - kanal oluşturucu
+
+[ x, y ] - monotterin kanalı
+
+
+
+kanal değiştiğinde
+- oluşturucuya girdiyse
+
+    - kendine ait bir kanal varsa
+        kendi odana gir butonu ve odaya giriş izni butonu çıkacak
+
+    - yoksa
+        oda oluştur ve odaya giriş izni butonu çıkacak
+
+- oluşturucudan çıktıysa
+    özel bir odası var mı diye kontrol et varsa bir şey yapma yoksa veritabanından kaldır
+
+
+- çıktığı oda bir özel kanal ise
+    odayı kontrol et, eğer ki odada kimse yoksa odayı sil ve veritabanından kaldır
+
+
+giriş izni iste
+    eğer ki son attığı isteğin üzerinden 30 saniye geçmediyse eski izinler silinecek
+
+- red
+    veritabanından istek ve mesaj silinecek
+- kabul
+    veritabanından istek ve mesaj silinecek
+    veritabanından oda mesajı silinecek
+    kullanıcı o odaya atılacak
+
+
+kanalı kapatma
+    odadaki kişiler oluşturucu kanalına atılacak, oda verisi ve oda silinecek
+
+odadan atma
+    odadaki kişi oluşturucuya atılacak
+
+kanalı oluşturma
+    kanalı oluştur veritabanına id yi gir kullanıcıyı onun odasına at

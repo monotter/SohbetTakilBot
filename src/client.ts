@@ -12,3 +12,6 @@ client.login(process.env.DISCORD_TOKEN)
 client.on('ready', () => {
     console.log(`Logged in as ${client.user!.tag}!`)
 })
+process.on('uncaughtException', function (err) {
+  console.error(err);
+});

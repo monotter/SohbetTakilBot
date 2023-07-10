@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType } from "discord.js";
+import { ApplicationCommandOptionType, PermissionFlagsBits } from "discord.js";
 import { model, Schema } from "mongoose";
 import { CreateChatCommand } from "../Interactor.js";
 
@@ -10,6 +10,7 @@ export const StaffRolesModel = model("StaffRoles", new Schema({
 CreateChatCommand({
     name: "yetkili-rol-ekle",
     description: "Belirtilen rolü yetkili rollerine ekler.",
+    default_member_permissions: PermissionFlagsBits.Administrator.toString(),
     options: [
         { name: "rol", type: ApplicationCommandOptionType.Role, description: "Eklenecek yetkili rolü", required: true }
     ]
@@ -24,6 +25,7 @@ CreateChatCommand({
 CreateChatCommand({
     name: "yetkili-rol-çıkar",
     description: "Belirtilen rolü yetkili rollerinden çıkarır.",
+    default_member_permissions: PermissionFlagsBits.Administrator.toString(),
     options: [
         { name: "rol", type: ApplicationCommandOptionType.Role, description: "Kaldırılacak yetkili rolü", required: true }
     ]
@@ -37,7 +39,8 @@ CreateChatCommand({
 })
 CreateChatCommand({
     name: "yetkili-rol-göster",
-    description: "Sunucudaki yetkili rollerini gösterir."
+    description: "Sunucudaki yetkili rollerini gösterir.",
+    default_member_permissions: PermissionFlagsBits.Administrator.toString(),
 }, async (interaction) => {
     await interaction.deferReply({ ephemeral: true })
     if (!interaction.memberPermissions.has("Administrator")) { interaction.editReply({  content: `Bu komutu kullanabilmek için yetkili değilsiniz.` }); return }
